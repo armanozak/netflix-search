@@ -1,0 +1,34 @@
+@import "@angular/material/prebuilt-themes/deeppurple-amber.css";
+
+*,
+*:after,
+*::before {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: Roboto, "Helvetica Neue", sans-serif;
+}
+
+.search-form {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  max-width: 600px;
+  padding: 40px;
+  margin: 80px auto;
+  width: 100%;
+}
+
+.option-list {
+  height: 200px;
+}
+
+.width-100 {
+  width: 100%;
+}
+
+.cta {
+  text-align: center;
+}
