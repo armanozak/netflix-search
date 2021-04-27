@@ -1,0 +1,30 @@
+<form class="search-form">
+  <mat-form-field class="width-100">
+    <mat-label>Search Netflix Data</mat-label>
+    <input
+          type="text"
+          placeholder="Start typing..."
+          matInput
+          [formControl]="searchControl"
+          [matAutocomplete]="auto"
+          (keyup.backspace)="clear()"
+        />
+
+    <mat-autocomplete #auto="matAutocomplete" (optionSelected)="selected = $event.option.value">
+      <cdk-virtual-scroll-viewport itemSize="50" class="option-list">
+        <mat-option *cdkVirtualFor="let option of options" [value]="option.url">
+          {{ option.name }}
+        </mat-option>
+      </cdk-virtual-scroll-viewport>
+    </mat-autocomplete>
+  </mat-form-field>
+
+  <a *ngIf="selected" mat-flat-button color="primary" rel="noopener noreferer" target="_blank" [href]="selected">
+    Open in new window
+    <mat-icon>open_in_new</mat-icon>
+  </a>
+</form>
+
+<div class="cta">
+  <a mat-stroked-button href="https://github.com/f/netflix-data">Give the repo a star on GitHub</a>
+</div>
