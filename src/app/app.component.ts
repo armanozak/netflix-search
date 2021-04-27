@@ -5,6 +5,7 @@ import {
   Injector,
   ViewContainerRef,
 } from "@angular/core";
+import { searchImport } from "../preload";
 import type { SearchModule } from "./search.module";
 
 @Component({
@@ -17,7 +18,7 @@ export class AppComponent {
     const compiler = injector.get(Compiler);
     const viewContainerRef = injector.get(ViewContainerRef);
 
-    import("./search.module")
+    searchImport
       .then((m) => compiler.compileModuleAsync(m.SearchModule))
       .then((moduleFactory) => {
         const moduleRef = moduleFactory.create(injector);
