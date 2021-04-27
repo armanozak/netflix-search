@@ -1,57 +1,33 @@
-import { HttpClient } from "@angular/common/http";
-import { ChangeDetectionStrategy, Component, Inject } from "@angular/core";
-import { FormControl } from "@angular/forms";
-import { distinctUntilChanged, debounceTime, map } from "rxjs/operators";
-import { OBSERVE, OBSERVE_PROVIDER, Observed, ObserveFn } from "ng-observe";
+import {
+  ChangeDetectionStrategy,
+  Compiler,
+  Component,
+  Injector,
+  ViewContainerRef,
+} from "@angular/core";
+import type { SearchModule } from "./search.module";
 
 @Component({
   selector: "app-root",
-  templateUrl: "./app.component.html",
-  viewProviders: [OBSERVE_PROVIDER],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  template: "",
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class AppComponent {
-  searchControl = new FormControl();
-  selected = null;
-  genres: Observed<Genre[]>;
-  search: Observed<string>;
+  constructor(injector: Injector) {
+    const compiler = injector.get(Compiler);
+    const viewContainerRef = injector.get(ViewContainerRef);
 
-  get options(): Genre[] {
-    if (!this.search.value || !this.genres.value) return [];
-
-    const filterValue = this.search.value.toLowerCase();
-
-    return this.genres.value.filter(option =>
-      option.name.toLowerCase().includes(filterValue)
-    );
+    import("./search.module")
+      .then((m) => compiler.compileModuleAsync(m.SearchModule))
+      .then((moduleFactory) => {
+        const moduleRef = moduleFactory.create(injector);
+        const moduleCtor: typeof SearchModule = moduleFactory.moduleType as any;
+        return moduleRef.componentFactoryResolver.resolveComponentFactory(
+          moduleCtor.component
+        );
+      })
+      .then((componentFactory) => {
+        viewContainerRef.createComponent(componentFactory);
+      });
   }
-
-  constructor(@Inject(OBSERVE) observe: ObserveFn, http: HttpClient) {
-    this.genres = observe(
-      http
-        .get<Genre[]>(
-          "https://raw.githubusercontent.com/f/netflix-genres/main/genres.tr.json"
-        )
-        .pipe(map(list => list.sort((a, b) => a.name.localeCompare(b.name))))
-    );
-
-    this.search = observe(
-      this.searchControl.valueChanges.pipe(
-        debounceTime(100),
-        distinctUntilChanged()
-      )
-    );
-  }
-
-  clear() {
-    if (!this.selected) return;
-
-    this.selected = null;
-    this.searchControl.reset();
-  }
-}
-
-interface Genre {
-  name: string;
-  url: string;
 }
