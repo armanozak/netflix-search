@@ -6010,10 +6010,10 @@ next-tick@~1.0.0:
   resolved "https://registry.yarnpkg.com/next-tick/-/next-tick-1.0.0.tgz#ca86d1fe8828169b0120208e3dc8424b9db8342c"
   integrity sha1-yobR/ogoFpsBICCOPchCS524NCw=
 
-ng-observe@^1.0.0:
-  version "1.0.0"
-  resolved "https://registry.yarnpkg.com/ng-observe/-/ng-observe-1.0.0.tgz#2a36f446bb6c809e4439f2c945cc5290f2271ece"
-  integrity sha512-73A2D4CyYRkCMoPQ5B60pYucRQyKyPjr6FBJKUKaCTIV9uu6Fpz+uQtc9B+F82GPamvk7toDsLbQxpckiGq/5g==
+ng-observe@^1.0.1:
+  version "1.0.1"
+  resolved "https://registry.yarnpkg.com/ng-observe/-/ng-observe-1.0.1.tgz#9ed119b644191806d41606724ef1820486cc98b9"
+  integrity sha512-1tAl9IbCab5zepGoGaMW7l3Yyn3STGa+DcWf3+/2Oj6hYaw23bIolIlHgFSi2mtU6GtHcRQY70F8fzAw279o3A==
   dependencies:
     tslib "^2.0.0"
 
