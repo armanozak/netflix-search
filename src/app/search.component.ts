@@ -1,7 +1,7 @@
 import { HttpClient } from "@angular/common/http";
 import { ChangeDetectionStrategy, Component, Inject } from "@angular/core";
 import { FormControl } from "@angular/forms";
-import { OBSERVE, Observed, ObserveFn, OBSERVE_PROVIDER } from "ng-observe";
+import { OBSERVE, ObserveFn, OBSERVE_PROVIDER } from "ng-observe";
 import { debounceTime, distinctUntilChanged, map } from "rxjs/operators";
 
 @Component({
@@ -12,34 +12,32 @@ import { debounceTime, distinctUntilChanged, map } from "rxjs/operators";
 export class SearchComponent {
   searchControl = new FormControl();
   selected = null;
-  genres: Observed<Genre[]>;
-  search: Observed<string>;
+  state: State;
 
   get options(): Genre[] {
-    if (!this.search.value || !this.genres.value) return [];
+    const { genres, search } = this.state;
 
-    const filterValue = this.search.value.toLowerCase();
+    if (!genres || !search) return [];
 
-    return this.genres.value.filter((option) =>
+    const filterValue = search.toLowerCase();
+
+    return genres.filter((option) =>
       option.name.toLowerCase().includes(filterValue)
     );
   }
 
   constructor(@Inject(OBSERVE) observe: ObserveFn, http: HttpClient) {
-    this.genres = observe(
-      http
+    this.state = observe({
+      genres: http
         .get<Genre[]>(
           "https://raw.githubusercontent.com/f/netflix-genres/main/genres.tr.json"
         )
-        .pipe(map((list) => list.sort((a, b) => a.name.localeCompare(b.name))))
-    );
-
-    this.search = observe(
-      this.searchControl.valueChanges.pipe(
+        .pipe(map((list) => list.sort((a, b) => a.name.localeCompare(b.name)))),
+      search: this.searchControl.valueChanges.pipe(
         debounceTime(100),
         distinctUntilChanged()
-      )
-    );
+      ),
+    });
   }
 
   clear() {
@@ -48,6 +46,11 @@ export class SearchComponent {
     this.selected = null;
     this.searchControl.reset();
   }
+}
+
+interface State {
+  genres: Genre[];
+  search: string;
 }
 
 interface Genre {
